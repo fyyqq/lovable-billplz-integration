@@ -14,6 +14,11 @@ return [
     |
     */
 
+    'billplz' => [
+        'api_key' => env('BILLPLZ_API_KEY'),
+        'collection_id' => env('BILLPLZ_COLLECTION_ID'),
+    ],
+
     'postmark' => [
         'key' => env('POSTMARK_API_KEY'),
     ],
