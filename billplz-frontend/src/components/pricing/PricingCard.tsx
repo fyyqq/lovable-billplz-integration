@@ -17,25 +17,49 @@ interface PricingCardProps {
 const PricingCard = ({ name, price, period, description, features, popular, priceId }: PricingCardProps) => {
   const navigate = useNavigate();
 
-  const handlePayInApp = () => {
-    // navigate(`/checkout?plan=${name.toLowerCase()}&price_id=${priceId || 'price_demo'}`);
-    navigate(`/checkout?plan=${name.toLowerCase()}&price_id=${priceId || 'price_demo'}&amount=${encodeURIComponent(price)}`);
-  };
+  const handlePayViaBillplz = async () => {
+    const data_collected = {
+      'user_id' : "1",
+      'amount' : 19.00,
+      'purpose' : name,
+      'name' : "Afiq",
+      'email' : "afiqakimy123@gmail.com",
+    };
 
-  const handlePayViaStripe = () => {
-    // Placeholder for Stripe redirect - to be wired by developers
-    console.log(`Stripe checkout redirect for plan: ${name}, priceId: ${priceId}`);
-    // Example: window.location.href = `${API_URL}/stripe/checkout?price_id=${priceId}`;
+    try {
+      // Hantar request ke backend Laravel
+      const response = await fetch('http://127.0.0.1:8000/api/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify(data_collected),
+      });
+
+      const data = await response.json();
+      console.log(data);
+
+      if (response.ok && data.url) {
+        // Alihkan (Redirect) browser pengguna terus ke halaman Billplz Sandbox
+        window.location.href = data.url;
+      } else {
+        alert('Ralat sistem: Gagal dapatkan pautan pembayaran.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Sambungan ke server gagal.');
+    }
   };
 
   return (
     <Card className={cn(
-      "relative flex flex-col transition-all duration-200 hover:shadow-lg",
-      popular && "border-primary shadow-md"
+      "relative flex flex-col transition-all duration-200",
+      popular && "border shadow-md"
     )}>
       {popular && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-          <span className="bg-primary text-primary-foreground text-xs font-medium px-3 py-1">
+          <span className="bg-primary hover:bg-blue-900 text-primary-foreground text-xs font-medium px-3 py-1">
             Most Popular
           </span>
         </div>
@@ -63,22 +87,14 @@ const PricingCard = ({ name, price, period, description, features, popular, pric
         
         <div className="space-y-3">
           <Button 
-            onClick={handlePayInApp}
+            onClick={handlePayViaBillplz}
             variant={popular ? "default" : "outline"} 
             className={cn(
               "w-full",
-              !popular && "border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+              !popular && "border-primary hover:bg-blue-600 hover:text-white"
             )}
           >
-            Pay in App
-          </Button>
-          
-          <Button 
-            onClick={handlePayViaStripe}
-            variant="ghost"
-            className="w-full text-muted-foreground hover:text-foreground"
-          >
-            Pay via Stripe
+            Pay via Billplz
           </Button>
         </div>
       </CardContent>

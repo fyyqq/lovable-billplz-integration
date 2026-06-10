@@ -12,18 +12,18 @@ import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-
 
 // load once (use your Vite env key)
 
-async function getStripePublishableKey() {
-    const response = await fetch("http://localhost:8000/stripe/config");
-    const data = await response.json();
-    return data.publishableKey;
-}
+// async function getStripePublishableKey() {
+//     const response = await fetch("http://localhost:8000/stripe/config");
+//     const data = await response.json();
+//     return data.publishableKey;
+// }
 
 // const stripePromise = loadStripe(await getStripePublishableKey());
 // Load Stripe publishable key from backend, then initialize Stripe
-const stripePromise = fetch("http://localhost:8000/stripe/config")
-  .then((res) => res.json())
-  .then((data) => loadStripe(data.publishableKey))
-  .catch(() => null);
+// const stripePromise = fetch("http://localhost:8000/stripe/config")
+//   .then((res) => res.json())
+//   .then((data) => loadStripe(data.publishableKey))
+//   .catch(() => null);
 
 const planDetails: Record<string, { name: string; price: string; features: string[] }> = {
     starter: {
@@ -130,7 +130,7 @@ const Checkout = () => {
                                     <Label>Payment details</Label>
                                 </div>
                                 <div id="stripe-payment-element" className="min-h-[100%] rounded-lg p-0">
-                                {clientSecret ? (
+                                {/* {clientSecret ? (
                                     <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: 'stripe' } }}>
                                         <StripePaymentForm selectedPlan={selectedPlan} />
                                     </Elements>
@@ -138,7 +138,7 @@ const Checkout = () => {
                                     <div className="flex items-center justify-center min-h-[120px]">
                                         <p className="text-sm text-muted-foreground">Loading payment form…</p>
                                     </div>
-                                )}
+                                )} */}
                                 </div>
                                 
                                 <p className="text-xs text-muted-foreground text-center">Your payment is securely processed by Stripe</p>
